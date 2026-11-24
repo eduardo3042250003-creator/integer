@@ -1,16 +1,17 @@
 from conexionbd import conexion,cursor
-class materiales():
-    def __init__(self,nombre,descripcion, medida, precioU, comprado,cotizacion):
+class Materiales():
+    def __init__(self,nombre,descripcion, medida, precioU, cantidad, comprado,cotizacion):
         self._nombre = nombre
         self._descripcion = descripcion
         self._medida = medida
         self._precioU = precioU 
+        self._cantidad = cantidad
         self._comprado = comprado
         self._cotizacion = cotizacion
     def insertar(self):
         try:
-            sql = "INSERT INTO materiales VALUES (null, %s, %s, %s, %s, %s, %s, )"
-            valores = (self._nombre, self._descripcion, self._medida, self._precioU, self._comprado, self._cotizacion)
+            sql = "INSERT INTO materiales VALUES (null, %s, %s, %s, %s, %s, %s, %s)"
+            valores = (self._nombre, self._descripcion, self._medida, self._precioU, self._cantidad, self._comprado, self._cotizacion)
             cursor.execute(sql, valores)
             conexion.commit()
             return True
@@ -26,6 +27,31 @@ class materiales():
         except:
             return []
     @staticmethod
+    def consultarId(id: int):
+        try:
+            sql = "select id, nombre, descrpcion, medida, precioU, cantidad comprado from materiales where cotizacion = %s"
+            cursor.execute(sql, (id,))
+            return cursor.fetchall()
+        except:
+            return []
+    @staticmethod
+    def consultarCotId():
+        try:
+            sql = "select id from cotizaciones"
+            cursor.execute(sql,)
+            return cursor.fetchall()
+        except:
+            return []
+    @staticmethod
+    def consultarPorID(id):
+        try:
+            sql = "select * from materiales where id = %s"
+            valores = (id,)
+            cursor.execute(sql, valores)
+            return cursor.fetchone()
+        except:
+            return []
+    @staticmethod
     def eliminar(id: int):
         try:
             sql = "delete from materiales where id= %s "
@@ -38,14 +64,24 @@ class materiales():
     def actualizar(self, id):
         try:
             
-            sql = "UPDATE materiales SET nombre = %s, descripcion = %s, medida = %s, precioU = %s, comprado = %s, 	cotizacion = %s, WHERE id = %s"
-            valores = (self._nombre, self._descripcion, self._medida, self._precioU, self._comprado, self._cotizacion, id)
+            sql = "UPDATE materiales SET nombre = %s, descrpcion = %s, medida = %s, precioU = %s, cantidad = %s WHERE id = %s"
+            valores = (self._nombre, self._descripcion, self._medida, self._precioU, self._cantidad, id)
             cursor.execute(sql, valores)
             conexion.commit()
             return True
         except Exception as e:
             print(f"Error al actualizar: {e}")
             return False
+    @staticmethod
+    def obtenerDatos():
+        try:
+            sql = "SELECT id, nombre, apellido1 FROM trabajadores"
+            cursor.execute(sql)
+            return cursor.fetchall()
+        except Exception as e:
+            print(f"Error al obtener datos: {e}")
+            return []
+
 
     #set y get`
     #get

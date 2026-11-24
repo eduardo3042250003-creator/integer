@@ -1,9 +1,12 @@
 from clientes import *
 from clientes.clientes import ClientesMVC
 from cotizaciones import cotizacionbd
+from cotizaciones.cotizacion import CotizacionesMVC
 from materiales import materialesbd
 from proyectos import proyectosbd
 from trabajadores import trabajadoresbd
+from trabajadores.trabajadores import TrabajadoresMVC
+from materiales.materilaes import MaterialesMVC
 import tkinter as tk
 from tkinter import Tk,Label,Entry,Button
 from tkinter import messagebox
@@ -63,40 +66,51 @@ class App:
         barra_superior.pack(fill="x")
         btn_logout = tk.Button(barra_superior, text="Cerrar sesión", command=self.cerrarSesion)
         btn_logout.pack(side="right", padx=10, pady=2)
+        btn_trabajadores = tk.Button(barra_superior, text="Trabajadores", command=self.irATrabajadores)
+        btn_trabajadores.pack(side="right", padx=5, pady=2)
+        btn_home = tk.Button(barra_superior, text="Home", command=self.main)
+        btn_home.pack(side="right", padx=5, pady=2)
         menu = tk.Frame(contenedor, height=50)
         menu.pack(fill="x")
         menu.pack_propagate(False)
         opciones = ["Cotizaciones", "Validacion", "Proyectos", "Cobranzas", "Clientes"]
-                
-        for i in range(len(opciones)):
-            menu.grid_columnconfigure(i, weight=1)
-            
-        for i, texto in enumerate(opciones):
-            # Evaluamos si el botón actual es "Clientes"
-            if texto == "Clientes":
-                # Instanciamos la clase pasándole la ventana principal y llamamos al método
-                accion = accion = self.irAClientes
-            else:
-                # Una acción temporal para los demás botones mientras los configuras
-                accion = lambda t=texto: print(f"Módulo de {t} en construcción")
 
-            btn = tk.Button(menu, text=texto, relief="solid", bd=1, command=accion)
-            btn.grid(row=0, column=i, sticky="nsew")
-            
+        for i in range(len(opciones)):
+          menu.grid_columnconfigure(i, weight=1)
+
+        for i, texto in enumerate(opciones):
+          if texto == "Clientes":
+            accion = self.irAClientes
+          elif texto == "Cotizaciones":
+                      accion = self.irACotizacionMVC
+          elif texto == "Validacion":
+              accion = self.irACotizacionMVC
+          else:
+            accion = lambda t=texto: print(f"Módulo de {t} en construcción")
+
+          btn = tk.Button(
+              menu, text=texto, relief="solid", bd=1, command=accion
+          )
+          btn.grid(row=0, column=i, sticky="nsew")
+
         menu.grid_rowconfigure(0, weight=1)
 
     def irAClientes(self):
-        # Instancias tu clase pasándole la ventana y la referencia del menú superior
         ClientesMVC(self.ventana, self.crear_menu_superior)
+    def irATrabajadores(self):
+        TrabajadoresMVC(self.ventana, self.crear_menu_superior)
+    def irACotizacionMVC(self):
+        CotizacionesMVC(self.ventana, self.crear_menu_superior)
+    def irAValidacion(self):
+        MaterialesMVC(self.ventana, self.crear_menu_superior, None, None, None)
     ##controladores
 
     
     def loginController(self):
-        credenciales = trabajadoresbd.trabajadores.validarLogin(self.username.get(),self.password.get())
+        credenciales = trabajadoresbd.Trabajadores.validarLogin(self.username.get(),self.password.get())
         for credencial in credenciales:
             if credencial[0] == self.username.get() and credencial[1] == self.password.get():
                 return True
-                break
         else:
             return False
 if __name__ == "__main__":

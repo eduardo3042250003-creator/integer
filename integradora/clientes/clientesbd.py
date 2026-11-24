@@ -10,9 +10,6 @@ class Clientes():
         self._rfc = rfc
         self._fechaRegistro = fechaRegistro
         self._estatus = estatus
-    #get y set
-    #get
-
     def insertar(self):
         try:
             sql = "INSERT INTO clientes VALUES (null, %s,%s,%s, %s, %s, %s, %s, %s, %s)"
@@ -76,8 +73,6 @@ class Clientes():
             return True
         except:
             return False
-    
-
     @property
     def nombre(self):
         return self._nombre

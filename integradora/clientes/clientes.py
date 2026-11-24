@@ -30,6 +30,15 @@ class ClientesMVC():
         else:
             self.borrarPantalla()
             self.editarClientesView()
+    def ejecutarTodobor(self):
+        respuesta = messagebox.askyesno("advertencia", "seguro que deseas actualizar?")
+        if respuesta:
+            self.borrarClientesController()
+            self.borrarPantalla()
+            self.mostrarClientesView()
+        else:
+            self.borrarPantalla()
+            self.editarClientesView()
 
     def mostrarClientesView(self):
         self.borrarPantalla()
@@ -194,6 +203,7 @@ class ClientesMVC():
         
         frame_botones = tk.Frame(frame_form)
         frame_botones.pack(pady=15)
+        Button(frame_botones, text='Borrar', command=self.ejecutarTodobor).pack(side="left", padx=5)
         Button(frame_botones, text='Actualizar', command=self.ejecutarTodoAct).pack(side="left", padx=5)
         Button(frame_botones, text='Regresar', command=self.mostrarClientesView).pack(side="left", padx=5)
     
@@ -202,29 +212,20 @@ class ClientesMVC():
         if cliente:
           self.nombreAct.delete(0, "end")
           self.nombreAct.insert(0, cliente[1])
-
           self.telefonoAct.delete(0, "end")
           self.telefonoAct.insert(0, cliente[2])
-
           self.emailAct.delete(0, "end")
           self.emailAct.insert(0, cliente[3])
-
           self.calleAct.delete(0, "end")
           self.calleAct.insert(0, cliente[4])
-
           self.numeroAct.delete(0, "end")
           self.numeroAct.insert(0, cliente[5])
-
           self.coloniaAct.delete(0, "end")
           self.coloniaAct.insert(0, cliente[6])
-
           self.rfcAct.delete(0, "end")
           self.rfcAct.insert(0, cliente[7])
-
           self.registroAct.set_date(cliente[8])
           self.estatusAct.set(cliente[9])
-
-
     def respuesta_sql(self, respuesta):
         if respuesta:
             messagebox.showinfo(title="::EXITO::", message="Accion como yo ...exitosa")
@@ -251,6 +252,10 @@ class ClientesMVC():
         respuesta = cliente1.actualizar(self.id_seleccionado)
         self.respuesta_sql(respuesta)
         del cliente1
+
+    def borrarClientesController(self, cliente_id):
+        respuesta = clientesbd.Clientes.eliminar(self.id_seleccionado)
+        self.respuesta_sql(respuesta)
     def buscarClientePorId(self, cliente_id):
         cliente = clientesbd.Clientes.consultarPorID(cliente_id)
         return cliente
